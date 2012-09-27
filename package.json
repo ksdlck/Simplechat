@@ -1,0 +1,24 @@
+{
+  "name": "simplechat",
+  "version": "0.0.1",
+  "description": "A simple browser chat application",
+  "main": "app.js",
+  "dependencies": {
+    "express": "~3.0.0rc4",
+    "socket.io": "~0.9.10"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "SOMETHING IN GITHUB HERE"
+  },
+  "keywords": [
+    "chat",
+    "webchat"
+  ],
+  "author": "Karel Sedlacek (http://ksdlck.com)",
+  "license": "DO WHATEVER THE FUCK YOU WANT License™"
+}

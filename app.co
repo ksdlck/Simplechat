@@ -1,0 +1,18 @@
+conf = require \./conf
+http = require \http
+express = require \express
+socketio = require \socket.io
+
+app = express ()
+
+srv = require \http .createServer app
+
+app.configure !->
+  app.use express.static "#__dirname/pub"
+
+io = socketio .listen srv
+
+io.sockets.on \connection !(sock)->
+  console.log "Yo, got a connection, man!"
+
+srv.listen conf.port, conf.addr
