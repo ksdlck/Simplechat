@@ -3,16 +3,45 @@ http = require \http
 express = require \express
 socketio = require \socket.io
 
-app = express ()
+# create an express server
+exp = express ()
 
-srv = require \http .createServer app
+# create an http server
+srv = http.createServer exp
 
-app.configure !->
-  app.use express.static "#__dirname/pub"
+# configure the express server
+exp.configure !->
+  exp.use express.static "#__dirname/pub"
 
+# create a socket.io server
 io = socketio .listen srv
 
-io.sockets.on \connection !(sock)->
-  console.log "Yo, got a connection, man!"
-
+# start accepting http connections
 srv.listen conf.port, conf.addr
+
+# the application logic
+# ---------------------
+
+backlog = []
+
+handlers =
+  message: !(sock, msg)->
+    # tag the message with its receipt time
+    msg.time = new Date
+
+    # append the message to the backlog
+    backlog.push msg
+    if backlog.length > conf.backlog
+      backlog.shift ()
+
+    # broadcast the message out 
+    io.sockets.emit \message msg
+
+io.sockets.on \connection !(sock)->
+  # add the handlers
+  for msg in handlers
+    let sock, msg
+      sock.on msg, !(dat)-> handlers[msg] sock, dat
+
+  # send the backlog
+  sock.emit \backlog backlog

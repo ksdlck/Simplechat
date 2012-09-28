@@ -1,0 +1,51 @@
+$ !->
+  # get a socket.io socket
+  sock = io.connect \http://127.0.0.1:8888
+
+  # generate a random default username
+  name = "Durrrrr#{Math.floor 10000 * Math.random ()}"
+  $ \#name-input .val name
+
+  # add a new message to the ui
+  addMessage = !(msg)->
+    $ \#messages .prepend $ \
+      '<div class="message">' +
+        '<span class="time">' + msg.time + '</span>' +
+        '<span class="name">' + msg.name + '</span>' +
+        '<span class="message">' + msg.message + '</span>' +
+      '</div>'
+
+  # socket event handlers
+  handlers =
+    backlog: !(backlog)->
+      console.log "got backlog: #backlog"
+      for msg of backlog
+        addMessage msg
+
+    message: !(msg)->
+      console.log "got message: #msg"
+      addMessage msg
+
+  # add socket event handlers
+  for msg in handlers
+    console.log "adding message handler for type #msg"
+    sock.on msg, handlers[msg]
+
+  # change name
+  $ \#name-input .change !(dat)->
+    name := $ \#name-input .val ()
+
+  # send messages
+  $ \#message-input-form .submit !(ev)->
+    # don't actually submit the form
+    ev.preventDefault ()
+
+    msgInput = $ \#message-input
+    msg = msgInput .val ()
+    msgInput.val ""
+
+    if msg != ""
+      console.log "sending message: #msg"
+      sock.emit \message name: name, message: msg
+    else
+      console.log "empty message, not sending"
