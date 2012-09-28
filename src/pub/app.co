@@ -8,12 +8,10 @@ $ !->
 
   # add a new message to the ui
   addMessage = !(msg)->
-    $ \#messages .prepend $ \
-      '<div class="message">' +
-        '<span class="time">' + msg.time + '</span>' +
-        '<span class="name">' + msg.name + '</span>' +
-        '<span class="message">' + msg.message + '</span>' +
-      '</div>'
+    $ \#messages .prepend ($ '<div class="message">'
+      .append ($ '<span class="time">' .text msg.time)
+      .append ($ '<span class="name">' .text msg.name)
+      .append ($ '<span class="message">' .text msg.message))
 
   # socket event handlers
   handlers =
