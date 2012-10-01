@@ -6,16 +6,18 @@
     <link type="text/css" rel="stylesheet" href="style.css"/>
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="date.format.js"></script>
     <script type="text/javascript" src="app.js"></script>
   </head>
   <body>
-    <div id="input-container">
-      <div id="name-input-container">
-        <input id="name-input" type="text"/>
+    <div id="top-bar">
+      <div id="name">
+        <img src="name.png"/>
       </div>
-      <div id="message-input-container">
-        <form id="message-input-form">
-          <input id="message-input" type="text"/>
+      <div id="message-container">
+        <form id="message-form">
+          <input id="message" type="text"/>
+          <input id="message-submit" type="submit" value="Send"/>
         </form>
       </div>
       <div class="clear"></div>

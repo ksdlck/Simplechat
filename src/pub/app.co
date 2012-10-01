@@ -1,49 +1,66 @@
+DEFAULT_NAME_PREFIX = "Durrrrr"
+MAX_NAME_LENGTH = 64
+MAX_MESSAGE_LENGTH = 512
+
 $ !->
-  # get a socket.io socket
-  sock = io.connect \http://127.0.0.1:8888
+  # set the name and message max lengths
+  $ \#name .attr \maxlength MAX_NAME_LENGTH
+  $ \#message .attr \maxlength MAX_MESSAGE_LENGTH
 
   # generate a random default username
-  name = "Durrrrr#{Math.floor 10000 * Math.random ()}"
-  $ \#name-input .val name
+  name = "#DEFAULT_NAME_PREFIX#{Math.floor 10000 * Math.random ()}"
+  $ \#name .val name
+
+  # prompt a user for a new name
+  promptName = !->
+    tName = prompt "Choose a name" name
+    if tName is not null
+      if tName.length > MAX_NAME_LENGTH
+        alert "Your name can't be longer than #MAX_NAME_LENGTH characters"
+      else
+        name := tName
 
   # add a new message to the ui
+  even = true
   addMessage = !(msg)->
     $ \#messages .prepend ($ '<div class="message">'
-      .append ($ '<span class="time">' .text msg.time)
-      .append ($ '<span class="name">' .text msg.name)
-      .append ($ '<span class="message">' .text msg.message))
+      .append ($ '<span class="time">' .text "[#{new Date msg.time .format \hh:mm:ss}]")
+      .append ($ '<span class="name">' .text "<#{msg.name}>")
+      .append ($ '<span class="message">' .text msg.message)
+      .addClass (if even then \even else \odd))
+    even := not even
+
+  # get a socket.io socket
+  sock = io.connect \http://127.0.0.1:8888
 
   # socket event handlers
   handlers =
     backlog: !(backlog)->
-      console.log "got backlog: #backlog"
       for msg of backlog
         addMessage msg
 
     message: !(msg)->
-      console.log "got message: #msg"
       addMessage msg
 
   # add socket event handlers
   for msg in handlers
-    console.log "adding message handler for type #msg"
     sock.on msg, handlers[msg]
 
   # change name
-  $ \#name-input .change !(dat)->
-    name := $ \#name-input .val ()
+  $ \#name .click !->
+    promptName ()
 
   # send messages
-  $ \#message-input-form .submit !(ev)->
+  $ \#message-form .submit !(ev)->
     # don't actually submit the form
     ev.preventDefault ()
 
-    msgInput = $ \#message-input
+    msgInput = $ \#message
     msg = msgInput .val ()
     msgInput.val ""
 
     if msg != ""
-      console.log "sending message: #msg"
       sock.emit \message name: name, message: msg
-    else
-      console.log "empty message, not sending"
+
+  # ask the user to pick a name
+  promptName ()

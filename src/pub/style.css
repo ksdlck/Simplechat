@@ -1,48 +1,76 @@
-* {
-  -webkit-box-sizing: content-box;
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
+*, input {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 .clear {
   clear: both;
 }
 
-#input-container {
+#top-bar {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
   width: 100%;
-  padding: 2px;
-  background-color: #369;
+  padding: 0.25em;
+  background: #369;
   border-bottom: 1px solid #036;
 }
 
-#name-input-container, #message-input-container {
-  float: left;
+#name {
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  margin: 0.25em;
 }
 
-#name-input-container {
-  width: 20%;
+#name img {
+  width: 1.5em;
+  height: 1.5em;
 }
 
-#message-input-container {
-  width: 80%;
-  outline: 1px solid #00F;
+#message-container {
+  margin-left: 2em;
 }
 
-#name-input, #message-input {
-  border: 0;
+#message-submit {
+  visibility: hidden;
+  position: absolute;
 }
 
-#name-input {
-  width: 98%;
+#name, #message{
+  border-width: 0;
+  font-size: 1em;
 }
 
-#message-input {
-  width: 98%;
+#message {
+  display: block;
+  width: 100%;
+}
+
+#messages {
+  height: 100%;
+  padding-top: 2em;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .message {
   width: 100%;
-  padding: 2px;
+  padding: 0.25em;
+}
+
+.message.odd {
+  background: #eee;
 }
 
 .message .time {
@@ -52,7 +80,4 @@
 .message .name {
   padding: 0 5px 0 5px;
   font-weight: bold;
-}
-
-.message .message {
 }
